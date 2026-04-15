@@ -60,6 +60,8 @@ Local Python installation is required.
 #### 1. Set up the environment
 ```bash
 python -m venv .venv
+```
+```bash
 source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
