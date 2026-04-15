@@ -41,12 +41,51 @@ You can run this entire enterprise architecture locally in seconds. The mock eng
 ### Option A: Running with Docker (Recommended)
 No local Python installation is required.
 
-# 1. Build the image
+### 1. Build the image
 ```bash
 docker build -t bi-gov-hub .
 ```
 
-# 2. Run the container
+### 2. Run the container
 ```bash
 docker run -p 8501:8501 bi-gov-hub
 ```
+
+### Option B: Standard Python Setup
+No local Python installation is required.
+
+### 1. Set up the environment
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 2. Initialize the Medallion Pipeline (Builds local SQLite Gold database)
+```bash
+python app/init_db.py
+```
+
+### 3. Launch the Governance UI
+```bash
+streamlit run app/main.py
+```
+
+---
+
+## 🗂️ Project Structure
+
+universal-bi-governance/
+├── app/                   # Serving Layer
+│   ├── init_db.py         # Local ETL pipeline & SQLite builder
+│   └── main.py            # Streamlit interactive UI
+├── databricks/            # Production Cloud Pipeline (Stubs)
+│   ├── 01_bronze_ingestion.py
+│   ├── 02_silver_transformations.py
+│   └── 03_gold_marts.py
+├── extractors/            # Data Extraction Layer (Provider Pattern)
+│   ├── base.py            # Abstract Base Class contract
+│   └── mock.py            # Faker-driven synthetic data provider
+├── Dockerfile             # Containerization config
+├── requirements.txt       # Python dependencies
+└── README.md
