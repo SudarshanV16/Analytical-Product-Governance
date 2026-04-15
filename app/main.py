@@ -4,7 +4,7 @@ import sqlite3
 import os
 import streamlit.components.v1 as components
 
-st.set_page_config(layout="wide", page_title="Universal BI Governance Hub")
+st.set_page_config(layout="wide", page_title="Analytical Product (BI) Governance Hub")
 
 # --- DATABASE CONNECTION (LOCAL SQLITE) ---
 DB_PATH = os.path.join(os.path.dirname(__file__), "local_governance.db")
