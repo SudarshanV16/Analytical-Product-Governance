@@ -79,7 +79,7 @@ streamlit run app/main.py
 ---
 
 ## 🗂️ Project Structure
-
+```bash
 universal-bi-governance/
 ├── app/                   # Serving Layer
 │   ├── init_db.py         # Local ETL pipeline & SQLite builder
@@ -94,3 +94,4 @@ universal-bi-governance/
 ├── Dockerfile             # Containerization config
 ├── requirements.txt       # Python dependencies
 └── README.md
+```
