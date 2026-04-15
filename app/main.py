@@ -289,7 +289,7 @@ if menu_selection == "🏠 Home":
     fav_head_col, fav_add_col = st.columns([9, 1], vertical_alignment="center")
     with fav_head_col: st.subheader("⭐ Your Favorite Dashboards")
     with fav_add_col:
-        with st.popover("➕ Add", width=stretch):
+        with st.popover("➕ Add", width="stretch"):
             home_search = st.text_input("🔎 Search App Name", key="home_search")
             df_home_display = prep_display_df(df_original, home_search)
             cols_to_keep = ['favorite', 'app_id', 'platform', 'app_name', 'space_name', 'app_link']
@@ -298,7 +298,7 @@ if menu_selection == "🏠 Home":
             
             st.data_editor(
                 df_home_display, column_config=column_config_settings, hide_index=True,
-                width=stretch, disabled=cols_to_disable, key="home_editor",
+                width="stretch", disabled=cols_to_disable, key="home_editor",
                 on_change=process_updates, args=("home_editor", df_home_display)
             )
 
@@ -319,7 +319,7 @@ if menu_selection == "🏠 Home":
         st.subheader("📊 Tracked Visuals")
         st.caption("Live views from your BI Platforms")
     with vis_add_col:
-        with st.popover("➕ Add", width=stretch):
+        with st.popover("➕ Add", width="stretch"):
             new_iframe = st.text_area("Paste iFrame HTML:", placeholder="<iframe src='...'></iframe>", height=100)
             if st.button("Save Visual", type="primary"):
                 if "<iframe" in new_iframe.lower():
@@ -340,7 +340,7 @@ if menu_selection == "🏠 Home":
                 with st.container(border=True):
                     spacer, btn_col = st.columns([15, 2])
                     with btn_col:
-                        with st.popover("⚙️", width=stretch):
+                        with st.popover("⚙️", width="stretch"):
                             new_w = st.select_slider("Width", options=["Half", "Full"], value=w_setting, key=f"w_{i}")
                             new_h = st.slider("Height (px)", 200, 800, h_setting, step=50, key=f"h_{i}")
                             if st.button("💾 Save", key=f"sv_{i}"):
@@ -393,7 +393,7 @@ elif menu_selection == "🔍 Find Dashboards":
     if is_steward:
         edited_df = st.data_editor(
             df_display, column_config=column_config_settings, hide_index=True,
-            width=stretch, disabled=base_disabled, key="gov_editor",
+            width="stretch", disabled=base_disabled, key="gov_editor",
             on_change=process_updates, args=("gov_editor", df_display)
         )
         
@@ -434,6 +434,6 @@ elif menu_selection == "🔍 Find Dashboards":
         cols_to_disable = [c for c in list(df_display.columns) if c != 'favorite']
         st.data_editor(
             df_display, column_config=column_config_settings, hide_index=True,
-            width=stretch, disabled=cols_to_disable, key="gov_editor",
+            width="stretch", disabled=cols_to_disable, key="gov_editor",
             on_change=process_updates, args=("gov_editor", df_display)
         )
