@@ -218,7 +218,7 @@ div[data-testid="stLinkButton"] a:hover { background-color: #007535 !important; 
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🛡️ Universal BI Governance Hub")
+st.title("🛡️ Analytical Product (BI) Governance Hub")
 
 if is_steward:
     st.info(f"👋 Welcome, **{current_user_name}**. You are logged in as a **Data Steward** (Edit Mode).")
