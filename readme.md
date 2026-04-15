@@ -43,8 +43,8 @@ You can run this entire enterprise architecture locally in seconds. The mock eng
 ```bash
 git clone [https://github.com/YOUR_USERNAME/universal-bi-governance.git](https://github.com/YOUR_USERNAME/universal-bi-governance.git)
 cd universal-bi-governance
+```
 
----
 ### 2. Set up the environment
 ```bash
 python -m venv .venv
