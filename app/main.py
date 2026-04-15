@@ -19,7 +19,7 @@ INPUTS_TABLE = "tbl_governance_inputs"
 FAVORITES_TABLE = "tbl_user_favorites"
 IFRAMES_TABLE = "tbl_user_iframes"
 
-STEWARD_EMAILS = ["t1.nlsvara@vanderlande.com", "t1.nlgjv@vanderlande.com", "dev_user"]
+STEWARD_EMAILS = [ "dev_user"]
 
 def get_current_user_email():
     try:
