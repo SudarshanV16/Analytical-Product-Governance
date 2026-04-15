@@ -83,17 +83,17 @@ streamlit run app/main.py
 ## 🗂️ Project Structure
 ```bash
 universal-bi-governance/
-├── app/                   # Serving Layer
-│   ├── init_db.py         # Local ETL pipeline & SQLite builder
-│   └── main.py            # Streamlit interactive UI
-├── databricks/            # Production Cloud Pipeline (Stubs)
+├── app/                                # Serving Layer
+│   ├── init_db.py                      # Local ETL pipeline & SQLite builder
+│   └── main.py                         # Streamlit interactive UI
+├── databricks/                         # Production Cloud Pipeline (Stubs)
 │   ├── 01_bronze_ingestion.py
 │   ├── 02_silver_transformations.py
 │   └── 03_gold_marts.py
-├── extractors/            # Data Extraction Layer (Provider Pattern)
-│   ├── base.py            # Abstract Base Class contract
-│   └── mock.py            # Faker-driven synthetic data provider
-├── Dockerfile             # Containerization config
-├── requirements.txt       # Python dependencies
+├── extractors/                         # Data Extraction Layer (Provider Pattern)
+│   ├── base.py                         # Abstract Base Class contract
+│   └── mock.py                         # Faker-driven synthetic data provider
+├── Dockerfile                          # Containerization config
+├── requirements.txt                    # Python dependencies
 └── README.md
 ```
