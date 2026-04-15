@@ -42,12 +42,12 @@ You can run this entire enterprise architecture locally in seconds. The mock eng
 ### Option A: Running with Docker (Recommended)
 No local Python installation is required.
 
-### 1. Build the image
+#### 1. Build the image
 ```bash
 docker build -t bi-gov-hub .
 ```
 
-### 2. Run the container
+#### 2. Run the container
 ```bash
 docker run -p 8501:8501 bi-gov-hub
 ```
@@ -57,19 +57,19 @@ docker run -p 8501:8501 bi-gov-hub
 ### Option B: Standard Python Setup
 No local Python installation is required.
 
-### 1. Set up the environment
+#### 1. Set up the environment
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Initialize the Medallion Pipeline (Builds local SQLite Gold database)
+#### 2. Initialize the Medallion Pipeline (Builds local SQLite Gold database)
 ```bash
 python app/init_db.py
 ```
 
-### 3. Launch the Governance UI
+#### 3. Launch the Governance UI
 ```bash
 streamlit run app/main.py
 ```
