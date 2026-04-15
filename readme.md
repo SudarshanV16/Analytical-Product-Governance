@@ -38,6 +38,7 @@ To enable zero-friction local development and portfolio demonstrations without r
 
 You can run this entire enterprise architecture locally in seconds. The mock engine will automatically generate a synthetic Power BI and Qlik environment for you.
 
+
 ### Option A: Running with Docker (Recommended)
 No local Python installation is required.
 
@@ -50,6 +51,8 @@ docker build -t bi-gov-hub .
 ```bash
 docker run -p 8501:8501 bi-gov-hub
 ```
+
+
 
 ### Option B: Standard Python Setup
 No local Python installation is required.
@@ -70,6 +73,8 @@ python app/init_db.py
 ```bash
 streamlit run app/main.py
 ```
+
+
 
 ---
 
