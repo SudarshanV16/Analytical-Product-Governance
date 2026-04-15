@@ -44,19 +44,26 @@ You can run this entire enterprise architecture locally in seconds. The mock eng
 git clone [https://github.com/YOUR_USERNAME/universal-bi-governance.git](https://github.com/YOUR_USERNAME/universal-bi-governance.git)
 cd universal-bi-governance
 
+---
 ### 2. Set up the environment
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
 pip install -r requirements.txt
+```
 
 ### 3. Initialize the Medallion Pipeline
+```bash
 python app/init_db.py
+```
 
 ### 4. Launch the Governance UI
+```bash
 streamlit run app/main.py
+```
 
 ### 5. Launch the Governance UI
+``` bash
 universal-bi-governance/
 ├── extractors/            # Data Extraction Layer
 │   ├── base.py            # Abstract Base Class contract
@@ -67,3 +74,4 @@ universal-bi-governance/
 ├── Dockerfile             # Containerization config
 ├── requirements.txt       # Python dependencies
 └── README.md
+```
