@@ -141,7 +141,7 @@ def get_data(selected_space="All", selected_platform="All", steward=False, user_
         COALESCE(a.app_owner_name, 'Unknown Owner') as app_owner_name,
         CASE 
             WHEN a.platform = 'Power BI' THEN 'https://app.powerbi.com/groups/' || a.workspace_id || '/reports/' || a.app_id
-            ELSE 'https://vanderlande.eu.qlikcloud.com/sense/app/' || a.app_id
+            ELSE 'https://your-tenant.eu.qlikcloud.com/sense/app/' || a.app_id
         END as app_link,
         COALESCE(b.approved_status, 'Pending') as approved_status,
         COALESCE(b.governance_comments, '') as governance_comments,
