@@ -40,7 +40,7 @@ You can run this entire enterprise architecture locally in seconds. The mock eng
 
 
 ### Option A: Running with Docker (Recommended)
-No local Python installation is required.
+No local Python installation is required. Docker Desktop is required. 
 
 #### 1. Build the image
 ```bash
