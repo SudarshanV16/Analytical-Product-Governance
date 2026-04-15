@@ -55,7 +55,7 @@ docker run -p 8501:8501 bi-gov-hub
 
 
 ### Option B: Standard Python Setup
-No local Python installation is required.
+Local Python installation is required.
 
 #### 1. Set up the environment
 ```bash
