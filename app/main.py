@@ -24,10 +24,10 @@ STEWARD_EMAILS = [ "dev_user"]
 def get_current_user_email():
     try:
         headers = st.context.headers
-        email = headers.get("X-Forwarded-Email", "dev_user")
+        email = headers.get("X-Forwarded-Email", "user")
         return email.strip()
     except:
-        return "dev_user"
+        return "user"
 
 def format_name(email):
     if not email or "@" not in email: 
@@ -37,6 +37,18 @@ def format_name(email):
 current_user_email = get_current_user_email()
 current_user_name = format_name(current_user_email)
 is_steward = current_user_email in STEWARD_EMAILS
+
+# Realistic Enterprise Personas (Moved up here so it can be used in filters)
+PERSONA_OPTIONS = [
+    "Unassigned", 
+    "Executive Leadership", 
+    "Department Head", 
+    "Operations Manager", 
+    "Data Analyst", 
+    "Frontline Worker", 
+    "Sales Rep",
+    "Finance Controller"
+]
 
 # --- 1. DATA FUNCTIONS ---
 def load_user_favorites(email):
@@ -122,8 +134,12 @@ def get_filter_options(column="space_name", steward=False):
           AND {column} != 'None' 
           AND trim({column}) != ''
     """
+    # Exclude UAT, ACC, DEV for viewers
     if not steward and column == "space_name":
-        query += " AND space_name NOT LIKE '%[ACC]%' AND space_name NOT LIKE '%[DEV]%'"
+        query += " AND space_name NOT LIKE '%[ACC]%' AND space_name NOT LIKE '%[DEV]%' AND space_name NOT LIKE '%[UAT]%'"
+    
+    if not steward and column == "environment":
+        query += " AND environment NOT IN ('ACC', 'DEV', 'UAT')"
         
     query += f" ORDER BY {column}"
     
@@ -131,20 +147,21 @@ def get_filter_options(column="space_name", steward=False):
         df = pd.read_sql(query, conn)
     return df[column].tolist()
 
-def get_data(selected_space="All", selected_platform="All", steward=False, user_name=""):
+def get_data(selected_space="All", selected_platform="All", selected_env="All", selected_persona="All", steward=False, user_name=""):
     base_query = f"""
     SELECT 
         a.app_id,
         a.platform,
         a.app_name,
         a.space_name,
+        COALESCE(a.environment, 'Unknown') as environment,
         COALESCE(a.app_owner_name, 'Unknown Owner') as app_owner_name,
         CASE 
             WHEN a.platform = 'Power BI' THEN 'https://app.powerbi.com/groups/' || a.workspace_id || '/reports/' || a.app_id
             ELSE 'https://your-tenant.eu.qlikcloud.com/sense/app/' || a.app_id
         END as app_link,
         COALESCE(b.approved_status, 'Pending') as approved_status,
-        COALESCE(b.governance_comments, '') as governance_comments,
+        COALESCE(b.persona, 'Unassigned') as persona,
         COALESCE(b.documentation_link, '') as documentation_link,
         COALESCE(b.kpi_definitions_link, '') as kpi_definitions_link,
         COALESCE(b.work_instructions_link, '') as work_instructions_link,
@@ -155,12 +172,14 @@ def get_data(selected_space="All", selected_platform="All", steward=False, user_
     WHERE 1=1
     """
     
+    # Block non-production workspaces for non-stewards
     if not steward:
         base_query += f""" 
             AND (
                 (a.space_name IS NOT NULL 
                  AND a.space_name NOT LIKE '%[ACC]%' 
-                 AND a.space_name NOT LIKE '%[DEV]%') 
+                 AND a.space_name NOT LIKE '%[DEV]%'
+                 AND a.space_name NOT LIKE '%[UAT]%') 
                 OR LOWER(a.app_owner_name) = LOWER('{user_name}')
             )
         """
@@ -170,6 +189,16 @@ def get_data(selected_space="All", selected_platform="All", steward=False, user_
         
     if selected_platform and selected_platform != "All":
         base_query += f" AND a.platform = '{selected_platform}'"
+
+    if selected_env and selected_env != "All":
+        base_query += f" AND a.environment = '{selected_env}'"
+
+    # Handle the new Persona Filter (Accounts for NULL values matching "Unassigned")
+    if selected_persona and selected_persona != "All":
+        if selected_persona == "Unassigned":
+            base_query += " AND (b.persona IS NULL OR b.persona = 'Unassigned')"
+        else:
+            base_query += f" AND b.persona = '{selected_persona}'"
     
     base_query += " ORDER BY b.last_updated DESC"
     
@@ -241,6 +270,7 @@ column_config_settings = {
     "app_id": None, 
     "app_link": st.column_config.LinkColumn("App", display_text="Open 🔗", width="small"),
     "platform": st.column_config.TextColumn("Platform", width="small"),
+    "environment": st.column_config.TextColumn("Env", width="small"),
     "documentation_link": st.column_config.LinkColumn("Docs", display_text="PDF 📄", validate="^https://.*", width="small"),
     "kpi_definitions_link": st.column_config.LinkColumn("KPIs", display_text="View 📑", validate="^https://.*", width="small"),
     "work_instructions_link": st.column_config.LinkColumn("Instructions", display_text="View 📋", validate="^https://.*", width="small"),
@@ -249,7 +279,7 @@ column_config_settings = {
     "app_owner_name": st.column_config.TextColumn("Owner"), 
     "last_updated": st.column_config.DatetimeColumn("Last Actioned", format="D MMM YYYY", disabled=True),
     "approved_status": st.column_config.SelectboxColumn("Status", options=["Pending", "Yes", "No", "Needs Review"], width="small"),
-    "governance_comments": st.column_config.TextColumn("Comments", width="large")
+    "persona": st.column_config.SelectboxColumn("Target Persona", options=PERSONA_OPTIONS, width="medium")
 }
 
 def process_updates(editor_key, reference_df):
@@ -278,7 +308,8 @@ st.sidebar.title("🧭 Navigation")
 menu_selection = st.sidebar.radio("Go to:", ["🏠 Home", "🔍 Find Dashboards"])
 st.sidebar.divider()
 
-df_original = get_data("All", "All", is_steward, current_user_name)
+# Load Home Page data
+df_original = get_data("All", "All", "All", "All", is_steward, current_user_name)
 df_original['favorite'] = df_original['app_id'].isin(st.session_state.favorites)
 
 # ==========================================
@@ -292,7 +323,7 @@ if menu_selection == "🏠 Home":
         with st.popover("➕ Add", width="stretch"):
             home_search = st.text_input("🔎 Search App Name", key="home_search")
             df_home_display = prep_display_df(df_original, home_search)
-            cols_to_keep = ['favorite', 'app_id', 'platform', 'app_name', 'space_name', 'app_link']
+            cols_to_keep = ['favorite', 'app_id', 'platform', 'environment', 'app_name', 'space_name', 'app_link']
             df_home_display = df_home_display[cols_to_keep]
             cols_to_disable = [c for c in df_home_display.columns if c != 'favorite']
             
@@ -367,13 +398,35 @@ elif menu_selection == "🔍 Find Dashboards":
     st.subheader("Catalog & Governance")
     
     st.sidebar.title("🔍 Filters")
-    available_platforms = ["All"] + get_filter_options("platform", is_steward)
-    selected_platform = st.sidebar.selectbox("Select Platform", available_platforms)
     
-    available_spaces = ["All"] + get_filter_options("space_name", is_steward)
-    selected_space = st.sidebar.selectbox("Select Workspace", available_spaces)
+    # --- ROLE BASED FILTER UI ---
+    if is_steward:
+        # Steward logic: Platform, Workspace, Environment (No Persona filter needed here)
+        available_platforms = ["All"] + get_filter_options("platform", is_steward)
+        selected_platform = st.sidebar.selectbox("Select Platform", available_platforms)
+        
+        available_spaces = ["All"] + get_filter_options("space_name", is_steward)
+        selected_space = st.sidebar.selectbox("Select Workspace", available_spaces)
 
-    df_filtered = get_data(selected_space, selected_platform, is_steward, current_user_name)
+        available_envs = ["All"] + get_filter_options("environment", is_steward)
+        selected_env = st.sidebar.selectbox("Select Environment", available_envs)
+        
+        selected_persona = "All"
+    else:
+        # Viewer logic: Persona, Platform, Workspace (Environment hidden)
+        available_personas = ["All"] + PERSONA_OPTIONS
+        selected_persona = st.sidebar.selectbox("Select Target Persona", available_personas)
+
+        available_platforms = ["All"] + get_filter_options("platform", is_steward)
+        selected_platform = st.sidebar.selectbox("Select Platform", available_platforms)
+        
+        available_spaces = ["All"] + get_filter_options("space_name", is_steward)
+        selected_space = st.sidebar.selectbox("Select Workspace", available_spaces)
+
+        selected_env = "All"
+
+    # Fetch Data
+    df_filtered = get_data(selected_space, selected_platform, selected_env, selected_persona, is_steward, current_user_name)
     df_filtered['favorite'] = df_filtered['app_id'].isin(st.session_state.favorites)
 
     total_apps = len(df_filtered)
@@ -388,7 +441,7 @@ elif menu_selection == "🔍 Find Dashboards":
     search_term = st.text_input("🔎 Search App Name", placeholder="Type to search...")
     df_display = prep_display_df(df_filtered, search_term)
 
-    base_disabled = ["app_name", "platform", "space_name", "app_owner_name", "last_updated", "app_link"]
+    base_disabled = ["app_name", "platform", "space_name", "environment", "app_owner_name", "last_updated", "app_link"]
 
     if is_steward:
         edited_df = st.data_editor(
@@ -397,7 +450,7 @@ elif menu_selection == "🔍 Find Dashboards":
             on_change=process_updates, args=("gov_editor", df_display)
         )
         
-        cols_to_compare = ['app_id', 'approved_status', 'governance_comments', 'documentation_link', 'kpi_definitions_link', 'work_instructions_link']
+        cols_to_compare = ['app_id', 'approved_status', 'persona', 'documentation_link', 'kpi_definitions_link', 'work_instructions_link']
         df_compare = df_display[cols_to_compare].astype(str)
         edited_compare = edited_df[cols_to_compare].astype(str)
         
@@ -408,21 +461,20 @@ elif menu_selection == "🔍 Find Dashboards":
                 with get_db_connection() as conn:
                     cursor = conn.cursor()
                     for _, row in rows_to_upload.iterrows():
-                        # SQLite Upsert Syntax
                         upsert_sql = f"""
                         INSERT INTO {INPUTS_TABLE} 
-                            (app_id, approved_status, governance_comments, documentation_link, kpi_definitions_link, work_instructions_link, last_updated) 
+                            (app_id, approved_status, persona, documentation_link, kpi_definitions_link, work_instructions_link, last_updated) 
                         VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                         ON CONFLICT(app_id) DO UPDATE SET
                             approved_status = excluded.approved_status,
-                            governance_comments = excluded.governance_comments,
+                            persona = excluded.persona,
                             documentation_link = excluded.documentation_link,
                             kpi_definitions_link = excluded.kpi_definitions_link,
                             work_instructions_link = excluded.work_instructions_link,
                             last_updated = CURRENT_TIMESTAMP
                         """
                         params = (
-                            str(row['app_id']), str(row['approved_status']), str(row['governance_comments']),
+                            str(row['app_id']), str(row['approved_status']), str(row['persona']),
                             str(row['documentation_link']), str(row['kpi_definitions_link']), str(row['work_instructions_link'])
                         )
                         cursor.execute(upsert_sql, params)

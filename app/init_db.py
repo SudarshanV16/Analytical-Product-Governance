@@ -24,14 +24,18 @@ def build_local_database():
 
     # 2. Join to create the Gold Layer Catalog View
     df_catalog = pd.merge(df_apps, df_workspaces, on=["workspace_id", "platform"], how="left")
+
+    # 3. Extract the environment tag from the workspace name (AFTER THE MERGE)
+    df_catalog['environment'] = df_catalog['workspace_name'].str.extract(r'\[(.*?)\]')
+    df_catalog['environment'] = df_catalog['environment'].fillna('Unknown')
     
-    # Rename columns to match your existing Streamlit logic
+    # 4. Rename columns to match your existing Streamlit logic
     df_catalog = df_catalog.rename(columns={
         "workspace_name": "space_name",
         "owner_name": "app_owner_name"
     })
 
-    # 3. Connect to SQLite and write tables
+    # 5. Connect to SQLite and write tables
     conn = sqlite3.connect(DB_PATH)
     
     print("📦 Writing Gold Catalog Table...")
@@ -45,7 +49,7 @@ def build_local_database():
     CREATE TABLE IF NOT EXISTS tbl_governance_inputs (
         app_id TEXT PRIMARY KEY,
         approved_status TEXT,
-        governance_comments TEXT,
+        persona TEXT,
         documentation_link TEXT,
         kpi_definitions_link TEXT,
         work_instructions_link TEXT,
