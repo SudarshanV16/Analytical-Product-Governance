@@ -1,6 +1,6 @@
 """
 Mock BI Extractor using Faker.
-Generates deterministic, relational synthetic metadata for local development.
+Generates deterministic, relational synthetic enterprise metadata for local development.
 """
 import logging
 import random
@@ -13,6 +13,22 @@ from .base import BaseBIExtractor
 # Configure logging for standard output
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# --- ENTERPRISE VOCABULARY ---
+DEPARTMENTS = ["Finance", "Sales", "HR", "Marketing", "Supply Chain", "IT", "Operations", "C-Suite"]
+REGIONS = ["Global", "EMEA", "NA", "APAC", "LATAM"]
+ENVIRONMENTS = ["PROD", "UAT", "DEV"]
+DASHBOARD_TYPES = ["Overview", "Deep Dive", "Analytics", "Scorecard", "Tracker", "Report", "Cockpit"]
+METRICS = {
+    "Finance": ["Revenue", "Margin", "OpEx", "EBITDA", "Cash Flow", "Forecasting"],
+    "Sales": ["Pipeline", "Win/Loss", "Quota Attainment", "Churn", "Bookings", "ARR"],
+    "HR": ["Headcount", "Attrition", "Diversity", "Time-to-Hire", "Compensation"],
+    "Marketing": ["Campaign ROI", "Web Traffic", "Lead Gen", "Conversion", "CAC"],
+    "Supply Chain": ["Inventory", "Logistics", "Vendor Performance", "Freight", "Procurement"],
+    "IT": ["Server Uptime", "Helpdesk Tickets", "Cloud Spend", "Security Incidents"],
+    "Operations": ["Factory Yield", "OEE", "Safety Incidents", "Utilization", "Downtime"],
+    "C-Suite": ["Executive Summary", "Board KPIs", "Strategic Initiatives", "ESG"]
+}
 
 class MockBIExtractor(BaseBIExtractor):
     """
@@ -41,17 +57,22 @@ class MockBIExtractor(BaseBIExtractor):
         self._users: List[Dict[str, Any]] = []
 
     def get_workspaces(self, count: int = 5) -> List[Dict[str, Any]]:
-        """Generates mock workspaces or spaces."""
+        """Generates realistic mock workspaces for enterprise departments."""
         logger.info(f"Generating {count} mock workspaces for {self.platform}...")
         workspaces = []
         space_types = ["Shared", "Managed", "Personal"] if self.platform == "Qlik" else ["Workspace", "Premium Workspace"]
         
         for _ in range(count):
+            dept = random.choice(DEPARTMENTS)
+            region = random.choice(REGIONS)
+            env = random.choices(ENVIRONMENTS, weights=[70, 20, 10])[0] # Heavy weighting to PROD
+            
             ws = {
                 "workspace_id": str(uuid.uuid4()),
-                "workspace_name": f"[{self.fake.word().upper()}] {self.fake.catch_phrase()} Analytics",
+                "workspace_name": f"{dept} Analytics - {region} [{env}]",
                 "workspace_type": random.choice(space_types),
-                "platform": self.platform
+                "platform": self.platform,
+                "department": dept # Track this so apps can use matching metrics
             }
             workspaces.append(ws)
         
@@ -59,7 +80,7 @@ class MockBIExtractor(BaseBIExtractor):
         return workspaces
 
     def get_apps(self, count: int = 20) -> List[Dict[str, Any]]:
-        """Generates mock dashboards assigned to previously generated workspaces."""
+        """Generates mock dashboards with realistic KPI names assigned to generated workspaces."""
         if not self._workspaces:
             self.get_workspaces()
 
@@ -67,9 +88,13 @@ class MockBIExtractor(BaseBIExtractor):
         apps = []
         for _ in range(count):
             workspace = random.choice(self._workspaces)
+            dept = workspace.get("department", random.choice(DEPARTMENTS))
+            metric = random.choice(METRICS[dept])
+            dtype = random.choice(DASHBOARD_TYPES)
+            
             apps.append({
                 "app_id": str(uuid.uuid4()),
-                "app_name": f"{self.fake.job()} Dashboard",
+                "app_name": f"{metric} {dtype}",
                 "workspace_id": workspace["workspace_id"],
                 "owner_name": self.fake.name(),
                 "created_at": self.fake.date_time_this_year().isoformat(),
@@ -105,7 +130,7 @@ class MockBIExtractor(BaseBIExtractor):
                 "assignment_id": str(uuid.uuid4()),
                 "workspace_id": random.choice(self._workspaces)["workspace_id"],
                 "user_id": random.choice(self._users)["user_id"],
-                "role": random.choice(roles),
+                "role": random.choices(roles, weights=[60, 20, 10, 10])[0], # Mostly viewers
                 "granted_at": self.fake.date_time_this_month().isoformat()
             })
         return assignments
