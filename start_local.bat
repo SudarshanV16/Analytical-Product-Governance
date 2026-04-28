@@ -1,7 +1,7 @@
 @echo off
 color 0B
 echo ===================================================
-echo    UNIVERSAL BI GOVERNANCE HUB BOOTSTRAP
+echo   🚀 UNIVERSAL BI GOVERNANCE HUB BOOTSTRAP
 echo ===================================================
 echo.
 
@@ -13,15 +13,19 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
-echo [1/3] Building Docker Container...
+echo [1/4] Building Docker Container...
 docker build -t bi-gov-hub .
 
-echo [2/3] Opening Web Browser...
-:: Waits 3 seconds to let Docker spin up, then opens the browser
-timeout /t 3 /nobreak >nul
+echo [2/4] Initializing Mock Database...
+:: This runs the python script INSIDE docker, but saves the .db file back to your Windows folder!
+docker run --rm -v "%cd%:/app" bi-gov-hub python app/init_db.py
+
+echo [3/4] Opening Web Browser...
+:: Increased timeout to 6 seconds so the container has time to start
+timeout /t 6 /nobreak >nul
 start http://localhost:8501
 
-echo [3/3] Launching Application Server...
+echo [4/4] Launching Application Server...
 echo (Press CTRL+C in this window to safely shut down the app)
 echo.
 :: Runs the container and mounts the current directory

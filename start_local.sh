@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "==================================================="
-echo "   UNIVERSAL BI GOVERNANCE HUB BOOTSTRAP"
+echo "      UNIVERSAL BI GOVERNANCE HUB BOOTSTRAP"
 echo "==================================================="
 echo ""
 
@@ -10,14 +10,18 @@ if ! docker info > /dev/null 2>&1; then
   exit 1
 fi
 
-echo "[1/3] Building Docker Container..."
+echo "[1/4] Building Docker Container..."
 docker build -t bi-gov-hub .
 
-echo "[2/3] Opening Web Browser..."
-# Background process to open browser after 3 seconds
-(sleep 3 && open http://localhost:8501 || xdg-open http://localhost:8501) &
+echo "[2/4] Initializing Mock Database..."
+# This runs the python script INSIDE docker, but saves the .db file back to your Mac folder!
+docker run --rm -v "$(pwd):/app" bi-gov-hub python app/init_db.py
 
-echo "[3/3] Launching Application Server..."
+echo "[3/4] Opening Web Browser..."
+# Increased sleep to 6 seconds so the container has time to start
+(sleep 6 && open http://localhost:8501 || xdg-open http://localhost:8501) &
+
+echo "[4/4] Launching Application Server..."
 echo "(Press CTRL+C in this terminal to safely shut down the app)"
 echo ""
 # Runs the container and mounts the current directory
