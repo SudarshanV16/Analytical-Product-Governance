@@ -25,24 +25,27 @@ The **Universal BI Governance Hub** abstracts the extraction of BI metadata and 
 
 ### 📸 Application Walkthrough
 
-**1. The Personalized Home Page** Users are greeted with their pinned dashboards and live tracked visuals.  
+**1. The Personalized Home Page** Users can view pinned dashboards, track live visuals, manage favorites directly from the home screen, and search the complete catalog for specific dashboards and documentation.
 
-**Main Dashboard View & Adding Favourites:**
 <p align="center">
   <img src="docs/assets/Add_Favourites.png" width="85%">
 </p>
 
-**2. The Data Steward Governance View** Stewards can filter unassigned dashboards, update approval statuses, and link documentation directly into the database.  
+**2. The Data Steward Governance View** <img src="docs/assets/Data_Steward_View.png" width="350" align="right">
 
-**Data Steward Catalog:**
-<p align="center">
-  <img src="docs/assets/Data_Steward_View.png" width="85%">
-</p>
+Stewards access the same unified interface as business users, but are greeted with an elevated "Edit Mode" indicator. 
 
-**Edit, Assign, or Approve Governance Rules:**
+Rather than just viewing the catalog, Data Stewards can filter unassigned assets, assign target business personas, update production approval statuses, and link external documentation directly to the underlying database.
+
+<br clear="both">
+
+**Editing, Assigning, and Approving Governance Rules:**
 <p align="center">
   <img src="docs/assets/DS_View_Assign_Persona_Status.png" width="85%">
 </p>
+
+---
+
 
 ## 🛣️ Future Roadmap
 
