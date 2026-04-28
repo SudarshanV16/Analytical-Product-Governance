@@ -103,7 +103,7 @@ Simply double-click the `start_local.bat` file.
 **Mac / Linux Users:**
 Run the shell script in your terminal:
 ```bash
-start_local.sh
+bash start_local.sh
 ```
 ### Option B: Standard Python Setup
 Local Python installation is required.
