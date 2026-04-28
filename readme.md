@@ -47,7 +47,7 @@ Rather than just viewing the catalog, Data Stewards can filter unassigned assets
 ---
 
 
-## 🛣️ Useful Next Extensions
+## 🛣️ Extensions:
 
 1. **Automated Policy Enforcement:** Implement scanning modules to check enterprise-specific rules, such as enforcing standard Naming Conventions, Workspace organization compliance, and semantic versioning of Analytical Products directly within the catalog.
 2. **AI-Powered Governance Copilot (RAG):** Once the heavy lifting of centralizing KPI definitions, functional design documents, and work instructions is complete, integrate a Retrieval-Augmented Generation (RAG) agent. This will allow business users to interact with the governance documentation using natural language (e.g., *"How is the Blended CAC metric calculated in the Marketing Dashboard?"*).
@@ -155,6 +155,5 @@ universal-bi-governance/
 ├── readme.md                           # Project documentation
 ├── requirements.txt                    # Python dependencies
 ├── start_local.bat                     # Windows deployment automation
-├── start_local.sh                      # Mac/Linux deployment automation
 └── test_mock.py                        # Extraction testing script
 ```
