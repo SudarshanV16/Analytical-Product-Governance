@@ -7,8 +7,6 @@
 
 A platform-agnostic Business Intelligence (BI) governance, cataloging, and auditing engine. Designed to combat "dashboard sprawl" across enterprise platforms (Power BI, Qlik, Tableau) by providing a single pane of glass for data stewards and business users.
 
-![Governance Hub Hero Image](docs/assets/hero_image.png) *(<- Replace with a wide screenshot of the Home page)*
-
 ---
 
 ## 📖 The Problem: Dashboard Sprawl
@@ -30,18 +28,18 @@ The **Universal BI Governance Hub** abstracts the extraction of BI metadata and 
 **1. The Personalized Home Page** Users are greeted with their pinned dashboards and live tracked visuals.  
 
 Home Page:
-![Home Page](docs/assets/User View.png) 
+![Home Page](docs/assets/User_View.png) 
 
 Add Favourites:
-![Home Page](docs/assets/Add Favourites.png) 
+![Home Page](docs/assets/Add_Favourites.png) 
 
 **2. The Data Steward Governance View** Stewards can filter unassigned dashboards, update approval statuses, and link documentation directly into the database.  
 
 Home Page:
-![Steward Edit Mode](docs/assets/Data Steward View.png)
+![Steward Edit Mode](docs/assets/Data_Steward_View.png)
 
 Edit, Assign or Approve Governance Rules:
-![Steward Edit Mode](docs/assets/DS View - Assign Persona, Status.png)
+![Steward Edit Mode](docs/assets/DS_View_Assign_Persona_Status.png)
 
 ## 🛣️ Future Roadmap
 
