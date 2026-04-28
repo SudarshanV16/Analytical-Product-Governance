@@ -27,12 +27,7 @@ The **Universal BI Governance Hub** abstracts the extraction of BI metadata and 
 
 **1. The Personalized Home Page** Users are greeted with their pinned dashboards and live tracked visuals.  
 
-**Main Dashboard View:**
-<p align="center">
-  <img src="docs/assets/User_View.png" width="85%">
-</p>
-
-**Adding Favourites:**
+**Main Dashboard View & Adding Favourites:**
 <p align="center">
   <img src="docs/assets/Add_Favourites.png" width="85%">
 </p>
