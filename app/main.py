@@ -24,10 +24,10 @@ STEWARD_EMAILS = [ "dev_user"]
 def get_current_user_email():
     try:
         headers = st.context.headers
-        email = headers.get("X-Forwarded-Email", "user")
+        email = headers.get("X-Forwarded-Email", "dev_user")
         return email.strip()
     except:
-        return "user"
+        return "dev_user"
 
 def format_name(email):
     if not email or "@" not in email: 
@@ -244,6 +244,7 @@ div[data-testid="stLinkButton"] a:hover { background-color: #007535 !important; 
 [data-testid="stSidebar"] div[role="radiogroup"] > label:hover { background-color: #f0f2f6; }
 [data-testid="stSidebar"] div[role="radiogroup"] > label:has(input:checked) { background-color: #e6e9ef !important; }
 [data-testid="stSidebar"] div[role="radiogroup"] > label:has(input:checked) p { color: #31333F !important; font-weight: 600; }
+div[data-testid="stPopoverBody"] { width: 800px !important; max-width: 95vw !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -320,18 +321,18 @@ if menu_selection == "🏠 Home":
     fav_head_col, fav_add_col = st.columns([9, 1], vertical_alignment="center")
     with fav_head_col: st.subheader("⭐ Your Favorite Dashboards")
     with fav_add_col:
-        with st.popover("➕ Add", width="stretch"):
-            home_search = st.text_input("🔎 Search App Name", key="home_search")
-            df_home_display = prep_display_df(df_original, home_search)
-            cols_to_keep = ['favorite', 'app_id', 'platform', 'environment', 'app_name', 'space_name', 'app_link']
-            df_home_display = df_home_display[cols_to_keep]
-            cols_to_disable = [c for c in df_home_display.columns if c != 'favorite']
-            
-            st.data_editor(
-                df_home_display, column_config=column_config_settings, hide_index=True,
-                width="stretch", disabled=cols_to_disable, key="home_editor",
-                on_change=process_updates, args=("home_editor", df_home_display)
-            )
+            with st.popover("➕ Add", use_container_width=True):
+                home_search = st.text_input("🔎 Search App Name", key="home_search")
+                df_home_display = prep_display_df(df_original, home_search)
+                cols_to_keep = ['favorite', 'app_id', 'platform', 'environment', 'app_name', 'space_name', 'app_link']
+                df_home_display = df_home_display[cols_to_keep]
+                cols_to_disable = [c for c in df_home_display.columns if c != 'favorite']
+                
+                st.data_editor(
+                    df_home_display, column_config=column_config_settings, hide_index=True,
+                    use_container_width=True, disabled=cols_to_disable, key="home_editor",
+                    on_change=process_updates, args=("home_editor", df_home_display)
+                )
 
     if st.session_state.favorites:
         fav_df = df_original[df_original['favorite'] == True]
