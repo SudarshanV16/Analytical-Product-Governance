@@ -47,7 +47,7 @@ Rather than just viewing the catalog, Data Stewards can filter unassigned assets
 ---
 
 
-## 🛣️ Future Roadmap
+## 🛣️ Useful Next Extensions
 
 1. **Automated Policy Enforcement:** Implement scanning modules to check enterprise-specific rules, such as enforcing standard Naming Conventions, Workspace organization compliance, and semantic versioning of Analytical Products directly within the catalog.
 2. **AI-Powered Governance Copilot (RAG):** Once the heavy lifting of centralizing KPI definitions, functional design documents, and work instructions is complete, integrate a Retrieval-Augmented Generation (RAG) agent. This will allow business users to interact with the governance documentation using natural language (e.g., *"How is the Blended CAC metric calculated in the Marketing Dashboard?"*).
@@ -94,12 +94,17 @@ Here is how this application maps to an enterprise production environment (e.g.,
 
 You can run this entire enterprise architecture locally in seconds. The mock engine will automatically generate a synthetic Power BI and Qlik environment for you.
 
-### Option A: 1-Click Windows Startup (Recommended)
-If you have Docker Desktop installed on Windows, simply double-click the included batch file. It will build the container, mount the volume, and launch the web browser automatically.
-```bash
-start_local.bat
-```
+### Option A: 1-Click Startup (Docker Recommended)
+If you have Docker Desktop installed, use the included startup scripts to automatically build the container, mount the volume, and launch the web browser.
 
+**Windows Users:**
+Simply double-click the `start_local.bat` file.
+
+**Mac / Linux Users:**
+Run the shell script in your terminal:
+```bash
+start_local.sh
+```
 ### Option B: Standard Python Setup
 Local Python installation is required.
 
@@ -150,5 +155,6 @@ universal-bi-governance/
 ├── readme.md                           # Project documentation
 ├── requirements.txt                    # Python dependencies
 ├── start_local.bat                     # Windows deployment automation
+├── start_local.sh                      # Mac/Linux deployment automation
 └── test_mock.py                        # Extraction testing script
 ```
