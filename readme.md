@@ -121,14 +121,13 @@ python app/init_db.py
 ```bash
 streamlit run app/main.py
 ```
-
-
-
 ---
 
 ## 🗂️ Project Structure
 ```bash
 universal-bi-governance/
+├── .streamlit/                         # Streamlit UI configuration
+│   └── config.toml
 ├── app/                                # Serving Layer
 │   ├── init_db.py                      # Local ETL pipeline & SQLite builder
 │   └── main.py                         # Streamlit interactive UI
@@ -136,10 +135,20 @@ universal-bi-governance/
 │   ├── 01_bronze_ingestion.py
 │   ├── 02_silver_transformations.py
 │   └── 03_gold_marts.py
+├── docs/assets/                        # Application screenshots
+│   ├── Add_Favourites.png
+│   ├── Data_Steward_View.png
+│   ├── DS_View_Assign_Persona_Status.png
+│   └── User_View.png
 ├── extractors/                         # Data Extraction Layer (Provider Pattern)
+│   ├── __init__.py
 │   ├── base.py                         # Abstract Base Class contract
 │   └── mock.py                         # Faker-driven synthetic data provider
+├── .dockerignore                       # Docker build exclusions
+├── .gitignore                          # Git tracking exclusions
 ├── Dockerfile                          # Containerization config
+├── readme.md                           # Project documentation
 ├── requirements.txt                    # Python dependencies
-└── README.md
+├── start_local.bat                     # Windows deployment automation
+└── test_mock.py                        # Extraction testing script
 ```
